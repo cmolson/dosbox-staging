@@ -1,5 +1,6 @@
 target_sources(libdosboxcommon PRIVATE
   clipboard.cpp
+  kiosk.cpp
   mapper.cpp
   sdl_gui.cpp
   titlebar.cpp
@@ -7,6 +8,7 @@ target_sources(libdosboxcommon PRIVATE
   render/auto_image_adjustments.cpp
   render/auto_shader_switcher.cpp
   render/deinterlacer.cpp
+  render/kiosk_overlay.cpp
   render/opengl_renderer.cpp
   render/render.cpp
   render/scaler/scalers.cpp

@@ -183,6 +183,7 @@ bool OpenGlRenderer::InitRenderer()
 	glDisable(GL_DEPTH_TEST);
 
 	shader_pipeline = std::make_unique<ShaderPipeline>();
+	kiosk_overlay   = std::make_unique<KioskOverlay>();
 
 	return true;
 }
@@ -202,6 +203,7 @@ OpenGlRenderer::~OpenGlRenderer()
 	// ShaderPipeline destructor makes some gl calls.
 	// Do that here before we delete the context.
 	shader_pipeline = {};
+	kiosk_overlay   = {};
 
 	if (context) {
 		SDL_GL_DeleteContext(context);
@@ -447,6 +449,8 @@ void OpenGlRenderer::PrepareFrame()
 void OpenGlRenderer::PresentFrame()
 {
 	shader_pipeline->Render(vao);
+
+	kiosk_overlay->Render(GetCanvasSizeInPixels(), curr_viewport_size_px);
 
 	// Optionally capture frame
 	if (CAPTURE_IsCapturingPostRenderImage()) {

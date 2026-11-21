@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include "kiosk_overlay.h"
 #include "private/shader_common.h"
 #include "private/shader_pipeline.h"
 
@@ -151,6 +152,7 @@ private:
 	VideoMode curr_video_mode          = {};
 
 	std::unique_ptr<ShaderPipeline> shader_pipeline = {};
+	std::unique_ptr<KioskOverlay> kiosk_overlay     = {};
 };
 
 #endif // C_OPENGL

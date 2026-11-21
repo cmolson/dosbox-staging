@@ -24,6 +24,7 @@
 #include "config/setup.h"
 #include "cpu/cpu.h"
 #include "dosbox.h"
+#include "gui/kiosk.h"
 #include "gui/mapper.h"
 #include "gui/render/opengl_renderer.h"
 #include "gui/render/sdl_renderer.h"
@@ -440,7 +441,11 @@ DosBox::Rect GFX_CalcDrawRectInPixels(const DosBox::Rect& canvas_size_px)
 	                                           render_size_px,
 	                                           sdl.draw.render_pixel_aspect_ratio);
 
-	return {iroundf(r.x), iroundf(r.y), iroundf(r.w), iroundf(r.h)};
+	const auto x = KIOSK_CalcImageX(iroundf(canvas_size_px.w),
+	                                iroundf(r.w),
+	                                iroundf(r.x));
+
+	return {x, iroundf(r.y), iroundf(r.w), iroundf(r.h)};
 }
 
 static void maybe_log_presentation_and_vsync_mode()
@@ -1022,6 +1027,14 @@ void GFX_SetSize(const int render_width_px, const int render_height_px,
 	maybe_log_display_properties();
 
 	GFX_Start();
+}
+
+void GFX_RefreshViewport()
+{
+	if (sdl.renderer) {
+		update_viewport();
+		notify_new_mouse_screen_params();
+	}
 }
 
 void GFX_CenterMouse()
@@ -2553,6 +2566,33 @@ void GFX_MaybePresentFrame()
 	}
 }
 
+static bool is_user_input(const SDL_Event& event)
+{
+	// Ignore analog stick jitter around the centre
+	constexpr int AxisDeadzone = 8000;
+
+	switch (event.type) {
+	case SDL_KEYDOWN:
+	case SDL_KEYUP:
+	case SDL_MOUSEMOTION:
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_MOUSEBUTTONUP:
+	case SDL_MOUSEWHEEL:
+	case SDL_JOYBUTTONDOWN:
+	case SDL_JOYBUTTONUP:
+	case SDL_JOYHATMOTION:
+	case SDL_CONTROLLERBUTTONDOWN:
+	case SDL_CONTROLLERBUTTONUP: return true;
+
+	case SDL_JOYAXISMOTION:
+		return std::abs(event.jaxis.value) > AxisDeadzone;
+	case SDL_CONTROLLERAXISMOTION:
+		return std::abs(event.caxis.value) > AxisDeadzone;
+
+	default: return false;
+	}
+}
+
 // Returns:
 //   true  - event loop can keep running
 //   false - event loop wants to quit
@@ -2579,6 +2619,10 @@ bool GFX_PollAndHandleEvents()
 			continue;
 		}
 #endif
+		if (is_user_input(event)) {
+			KIOSK_NotifyUserInput();
+		}
+
 		if (is_user_event(event)) {
 			handle_user_event(event);
 			continue;

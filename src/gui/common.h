@@ -37,6 +37,7 @@ bool GFX_HaveDesktopEnvironment();
 
 DosBox::Rect GFX_GetCanvasSizeInPixels();
 DosBox::Rect GFX_GetViewportSizeInPixels();
+void GFX_RefreshViewport();
 
 double GFX_GetHostRefreshRate();
 

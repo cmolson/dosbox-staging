@@ -34,6 +34,7 @@
 #include "dos/programs.h"
 #include "fpu/fpu.h"
 #include "gui/common.h"
+#include "gui/kiosk.h"
 #include "gui/mapper.h"
 #include "gui/render/render.h"
 #include "hardware/audio/gus.h"
@@ -161,6 +162,7 @@ static Bitu normal_loop()
 			if (!GFX_PollAndHandleEvents()) {
 				return 0;
 			}
+			KIOSK_Update();
 			if (ticks.remain > 0) {
 				TIMER_AddTick();
 				--ticks.remain;
@@ -1090,6 +1092,7 @@ void DOSBOX_InitModuleConfigsAndMessages()
 
 	ETHERNET_AddConfigSection(control);
 	WEBSERVER_AddConfigSection(control);
+	KIOSK_AddConfigSection(control);
 
 	control->AddAutoexecSection();
 
@@ -1156,6 +1159,7 @@ void DOSBOX_InitModules()
 	VIRTUALBOX_Init();
 	VMWARE_Init();
 	WEBSERVER_Init();
+	KIOSK_Init();
 
 	AUTOEXEC_Init();
 }

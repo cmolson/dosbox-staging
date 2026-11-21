@@ -1,5 +1,6 @@
 libgui_sources = files(
     'clipboard.cpp',
+    'kiosk.cpp',
     'mapper.cpp',
     'mapper.cpp',
     'sdl_gui.cpp',
@@ -8,6 +9,7 @@ libgui_sources = files(
     'render/auto_image_adjustments.cpp',
     'render/auto_shader_switcher.cpp',
     'render/deinterlacer.cpp',
+    'render/kiosk_overlay.cpp',
     'render/opengl_renderer.cpp',
     'render/render.cpp',
     'render/scaler/scalers.cpp',

@@ -14,6 +14,7 @@
 #include "debugger/debugger.h"
 #include "dos.h"
 #include "dos/programs.h"
+#include "gui/kiosk.h"
 #include "gui/titlebar.h"
 #include "hardware/memory.h"
 #include "hardware/vmware.h"
@@ -84,6 +85,7 @@ void DOS_UpdateCurrentProgramName()
 	}
 
 	TITLEBAR_NotifyProgramName(segment_name, canonical_name);
+	KIOSK_NotifyProgramName(segment_name, canonical_name);
 	VMWARE_NotifyProgramName(segment_name);
 }
 
